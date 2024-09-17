@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Pull the project from GitHub
-                git branch: 'main', url: https://github.com/romic-azure/K6_jnkns_dckr.git'
+                git branch: 'main', url: 'https://github.com/romic-azure/K6_jnkns_dckr.git'
             }
         }
 
