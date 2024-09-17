@@ -1,9 +1,11 @@
 pipeline {
     agent any
 
-    def DOCKER_HUB_USERNAME = 'romeops'
-    def DOCKER_HUB_REPOSITORY = 'k6_modular'
-
+    environment {
+        def DOCKER_HUB_USERNAME = 'romeops'
+        def DOCKER_HUB_REPOSITORY = 'k6_modular'
+    }
+    
     stages {
         stage('Checkout') {
             steps {
