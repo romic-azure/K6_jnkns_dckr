@@ -1,10 +1,8 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        DOCKER_IMAGE = "romeops/k6_modular"
-    }
+    def DOCKER_HUB_USERNAME = 'romeops'
+    def DOCKER_HUB_REPOSITORY = 'k6_modular'
 
     stages {
         stage('Checkout') {
@@ -17,43 +15,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'docker build -t ${DOCKER_IMAGE} .'
-                    } else {
-                        bat 'docker build -t %DOCKER_IMAGE% .'
-                    }
+                    echo 'Building Docker image...'
+                    def tag = "${env.BUILD_NUMBER}"
+                    sh "docker build -t ${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPOSITORY}:${tag} ."
                 }
             }
         }
-
-        stage('Docker Login') {
-            steps {
-                script {
-                    if (isUnix()) {
-                        sh '''
-                        echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
-                        '''
-                    } else {
-                        bat '''
-                        echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin
-                        '''
-                    }
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    if (isUnix()) {
-                        sh 'docker push ${DOCKER_IMAGE}'
-                    } else {
-                        bat 'docker push %DOCKER_IMAGE%'
-                    }
-                }
-            }
-        }
-
+       
+       /*
         stage('Run k6 Tests and Generate Report') {
             steps {
                 script {
@@ -65,6 +34,7 @@ pipeline {
                 }
             }
         }
+        */
 
         stage('Archive Test Results') {
             steps {
